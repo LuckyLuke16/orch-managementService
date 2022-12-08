@@ -4,8 +4,10 @@ import com.example.managementservice.model.ItemDTO;
 import com.example.managementservice.model.ItemDetailDTO;
 import com.example.managementservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import java.util.ArrayList;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 
 @Controller
@@ -18,16 +20,18 @@ public class ProductController implements ProductOperations{
         this.productService = productService;
     }
 
-    @Override
     public List<ItemDTO> fetchAllItems() {
-        List<ItemDTO> allItemsList = new ArrayList<>();
+        List<ItemDTO> allItemsList;
 
-        allItemsList = productService.fetchAllProducts();
+        try {
+            allItemsList = productService.fetchAllProducts();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
 
-        return null;
+        return allItemsList;
     }
 
-    @Override
     public ItemDetailDTO fetchSingleItem(String itemID) {
         return null;
     }
