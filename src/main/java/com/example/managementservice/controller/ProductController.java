@@ -1,5 +1,6 @@
 package com.example.managementservice.controller;
 
+import com.example.managementservice.model.Genre;
 import com.example.managementservice.model.ItemDTO;
 import com.example.managementservice.model.ItemDetailDTO;
 import com.example.managementservice.service.ProductService;
@@ -20,11 +21,11 @@ public class ProductController implements ProductOperations{
         this.productService = productService;
     }
 
-    public List<ItemDTO> fetchAllItems() {
+    public List<ItemDTO> fetchAllItems(String genre) {
         List<ItemDTO> allItemsList;
-
         try {
-            allItemsList = productService.fetchAllProducts();
+            Genre genreEnum = Genre.valueOf(genre);
+            allItemsList = productService.fetchAllProducts(genreEnum);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -33,6 +34,13 @@ public class ProductController implements ProductOperations{
     }
 
     public ItemDetailDTO fetchSingleItem(String itemID) {
-        return null;
+        ItemDetailDTO singleItemToFetch;
+        try {
+            singleItemToFetch = productService.fetchSingleItem(itemID);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        return singleItemToFetch;
     }
 }
