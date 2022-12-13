@@ -1,5 +1,6 @@
 package com.example.managementservice.controller;
 
+import com.example.managementservice.controller.controllerInterfaces.ProductOperations;
 import com.example.managementservice.model.Genre;
 import com.example.managementservice.model.ItemDTO;
 import com.example.managementservice.model.ItemDetailDTO;
@@ -12,9 +13,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Controller
-public class ProductController implements ProductOperations{
+public class ProductController implements ProductOperations {
 
-    private ProductService productService;
+    private final ProductService productService;
 
     @Autowired
     public ProductController(ProductService productService) {
@@ -33,7 +34,7 @@ public class ProductController implements ProductOperations{
         return allItemsList;
     }
 
-    public ItemDetailDTO fetchSingleItem(String itemID) {
+    public ItemDetailDTO fetchSingleItem(int itemID) {
         ItemDetailDTO singleItemToFetch;
         try {
             singleItemToFetch = productService.fetchSingleItem(itemID);

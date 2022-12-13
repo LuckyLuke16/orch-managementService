@@ -1,4 +1,4 @@
-package com.example.managementservice.controller;
+package com.example.managementservice.controller.controllerInterfaces;
 
 import com.example.managementservice.model.ItemDTO;
 import com.example.managementservice.model.ItemDetailDTO;
@@ -16,6 +16,6 @@ public interface ProductOperations {
     List<ItemDTO> fetchAllItems(@RequestParam(defaultValue = "ALL") String genre);
 
     @GetMapping("/{itemID}")
-    ItemDetailDTO fetchSingleItem(@PathVariable String itemID);
+    ItemDetailDTO fetchSingleItem(@PathVariable int itemID);
 
 }

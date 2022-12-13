@@ -4,6 +4,8 @@ import com.example.managementservice.exception.NoItemsFoundException;
 import com.example.managementservice.model.Genre;
 import com.example.managementservice.model.ItemDTO;
 import com.example.managementservice.model.ItemDetailDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -14,6 +16,9 @@ import java.util.List;
 public class ProductService {
 
     private final RestTemplate restTemplate;
+
+    Logger logger = LoggerFactory.getLogger(ProductService.class);
+
 
     private final String PRODUCT_SERVICE_URL = "http://localhost:8081";
 
@@ -30,6 +35,7 @@ public class ProductService {
 
             return listOfAllProducts;
         }
+        logger.warn("No items could be fetch {}", response.getStatusCode());
         throw new NoItemsFoundException();
     }
 
@@ -37,7 +43,7 @@ public class ProductService {
         return response.getBody() != null && response.getBody().length > 0;
     }
 
-    public ItemDetailDTO fetchSingleItem(String itemID) {
+    public ItemDetailDTO fetchSingleItem(int itemID) {
         ItemDetailDTO singleItemToFetch;
 
         ResponseEntity<ItemDetailDTO> response = restTemplate.getForEntity(PRODUCT_SERVICE_URL + "/items" + "/" + itemID, ItemDetailDTO.class);
