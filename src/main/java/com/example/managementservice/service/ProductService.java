@@ -52,6 +52,7 @@ public class ProductService {
 
             return singleItemToFetch;
         }
+        logger.warn("Wanted item not found {}", response.getStatusCode());
         throw new NoItemsFoundException();
     }
 }

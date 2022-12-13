@@ -1,7 +1,7 @@
 package com.example.managementservice.controller;
 
 import com.example.managementservice.controller.controllerInterfaces.ShoppingCartOperations;
-import com.example.managementservice.model.ItemDTO;
+import com.example.managementservice.model.ItemDetailDTO;
 import com.example.managementservice.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,8 @@ public class ShoppingCartController implements ShoppingCartOperations {
     public ShoppingCartController(ShoppingCartService shoppingCartService) {
         this.shoppingCartService = shoppingCartService;
     }
-    public List<ItemDTO> fetchShoppingCartContent() {
-        List<ItemDTO> allShoppingCartItems;
+    public List<ItemDetailDTO> fetchShoppingCartContent() {
+        List<ItemDetailDTO> allShoppingCartItems;
         try {
             allShoppingCartItems = shoppingCartService.fetchShoppingCartItems();
         } catch (Exception e) {
@@ -40,9 +40,9 @@ public class ShoppingCartController implements ShoppingCartOperations {
 
     public void addItem(int itemId) {
         try {
-            shoppingCartService.deleteShoppingCartItem(itemId);
+            shoppingCartService.addShoppingCartItem(itemId);
         } catch(Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 }
