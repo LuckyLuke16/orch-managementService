@@ -4,6 +4,8 @@ import com.example.managementservice.exception.NoItemsFoundException;
 import com.example.managementservice.model.Genre;
 import com.example.managementservice.model.ItemDTO;
 import com.example.managementservice.model.ItemDetailDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,6 +17,9 @@ public class ProductService {
 
     private final RestTemplate restTemplate;
 
+    Logger logger = LoggerFactory.getLogger(ProductService.class);
+
+
     private final String PRODUCT_SERVICE_URL = "http://localhost:8081";
 
     public ProductService(RestTemplate restTemplate) {
@@ -24,12 +29,13 @@ public class ProductService {
     public List<ItemDTO> fetchAllProducts(Genre genre) throws NoItemsFoundException{
         List<ItemDTO> listOfAllProducts;
 
-        ResponseEntity<ItemDTO[]> response = restTemplate.getForEntity(PRODUCT_SERVICE_URL + "/items" + "/" + genre, ItemDTO[].class);
+        ResponseEntity<ItemDTO[]> response = restTemplate.getForEntity(PRODUCT_SERVICE_URL + "/items" + "?genre=" + genre, ItemDTO[].class);
         if(response.getStatusCode().is2xxSuccessful() && wereItemsFound(response)) {
             listOfAllProducts = List.of(response.getBody());
-
+            logger.info("{} items found", listOfAllProducts.size());
             return listOfAllProducts;
         }
+        logger.warn("No items could be fetch {}", response.getStatusCode());
         throw new NoItemsFoundException();
     }
 
@@ -37,7 +43,7 @@ public class ProductService {
         return response.getBody() != null && response.getBody().length > 0;
     }
 
-    public ItemDetailDTO fetchSingleItem(String itemID) {
+    public ItemDetailDTO fetchSingleItem(int itemID) {
         ItemDetailDTO singleItemToFetch;
 
         ResponseEntity<ItemDetailDTO> response = restTemplate.getForEntity(PRODUCT_SERVICE_URL + "/items" + "/" + itemID, ItemDetailDTO.class);
@@ -46,6 +52,7 @@ public class ProductService {
 
             return singleItemToFetch;
         }
+        logger.warn("Wanted item not found {}", response.getStatusCode());
         throw new NoItemsFoundException();
     }
 }

@@ -16,4 +16,6 @@ public class ItemDetailDTO {
     private String author;
 
     private float price;
+
+    private int quantity;
 }

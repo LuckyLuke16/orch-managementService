@@ -1,4 +1,4 @@
-package com.example.managementservice.controller;
+package com.example.managementservice.controller.controllerInterfaces;
 
 import com.example.managementservice.model.OrderDTO;
 import org.springframework.web.bind.annotation.PostMapping;
