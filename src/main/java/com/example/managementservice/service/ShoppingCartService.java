@@ -1,6 +1,7 @@
 package com.example.managementservice.service;
 
 import com.example.managementservice.exception.NoItemsFoundException;
+import com.example.managementservice.exception.ShoppinCartItemDeletionFailedException;
 import com.example.managementservice.exception.ShoppingCartContentNotFoundException;
 import com.example.managementservice.model.ItemDetailDTO;
 import org.slf4j.Logger;
@@ -18,10 +19,9 @@ public class ShoppingCartService {
     private final RestTemplate restTemplate;
     private final ProductService productService;
 
-    Logger logger = LoggerFactory.getLogger(ProductService.class);
+    Logger logger = LoggerFactory.getLogger(ShoppingCartService.class);
 
     private final String PRODUCT_SERVICE_URL = "http://localhost:8082";
-
 
     public ShoppingCartService(RestTemplate restTemplate, ProductService productService) {
         this.restTemplate = restTemplate;
@@ -82,6 +82,7 @@ public class ShoppingCartService {
             logger.info("Item with id: {} successfully added to shopping cart", itemId);
         }else {
             logger.warn("Item with id: {} could not be added to shopping cart", itemId);
+            throw new ShoppinCartItemDeletionFailedException(itemId);
         }
     }
 }

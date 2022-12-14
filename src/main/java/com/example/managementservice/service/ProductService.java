@@ -29,10 +29,10 @@ public class ProductService {
     public List<ItemDTO> fetchAllProducts(Genre genre) throws NoItemsFoundException{
         List<ItemDTO> listOfAllProducts;
 
-        ResponseEntity<ItemDTO[]> response = restTemplate.getForEntity(PRODUCT_SERVICE_URL + "/items" + "/" + genre, ItemDTO[].class);
+        ResponseEntity<ItemDTO[]> response = restTemplate.getForEntity(PRODUCT_SERVICE_URL + "/items" + "?genre=" + genre, ItemDTO[].class);
         if(response.getStatusCode().is2xxSuccessful() && wereItemsFound(response)) {
             listOfAllProducts = List.of(response.getBody());
-
+            logger.info("{} items found", listOfAllProducts.size());
             return listOfAllProducts;
         }
         logger.warn("No items could be fetch {}", response.getStatusCode());

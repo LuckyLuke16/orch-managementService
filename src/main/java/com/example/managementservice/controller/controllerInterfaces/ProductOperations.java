@@ -13,7 +13,7 @@ import java.util.List;
 public interface ProductOperations {
 
     @GetMapping
-    List<ItemDTO> fetchAllItems(@RequestParam(defaultValue = "ALL") String genre);
+    List<ItemDTO> fetchItemsByCategory(@RequestParam(defaultValue = "ALL") String genre);
 
     @GetMapping("/{itemID}")
     ItemDetailDTO fetchSingleItem(@PathVariable int itemID);
