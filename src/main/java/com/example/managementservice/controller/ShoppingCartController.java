@@ -21,6 +21,7 @@ public class ShoppingCartController implements ShoppingCartOperations {
     }
     public List<ItemDetailDTO> fetchShoppingCartContent() {
         List<ItemDetailDTO> allShoppingCartItems;
+
         try {
             allShoppingCartItems = shoppingCartService.fetchShoppingCartItems();
         } catch (Exception e) {
