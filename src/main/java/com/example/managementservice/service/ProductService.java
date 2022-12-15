@@ -19,7 +19,6 @@ public class ProductService {
 
     Logger logger = LoggerFactory.getLogger(ProductService.class);
 
-
     private final String PRODUCT_SERVICE_URL = "http://localhost:8081";
 
     public ProductService(RestTemplate restTemplate) {
