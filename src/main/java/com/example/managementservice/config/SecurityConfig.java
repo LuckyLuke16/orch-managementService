@@ -55,17 +55,4 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         return new HttpSessionManager();
     }
 
-//    @Bean
-//    public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
-//        return new ServletListenerRegistrationBean<HttpSessionEventPublisher>(new HttpSessionEventPublisher());
-//    }
-
-
-//    @Override
-//    protected void configure(HttpSecurity security) throws Exception
-//    {
-//        security
-//                .httpBasic().disable();
-//        security.anonymous().disable();
-//    }
 }
