@@ -31,7 +31,7 @@ public class ShoppingCartService {
     }
 
     public void deleteShoppingCartItem(int itemId, String userId) {
-        restTemplate.delete(SHOPPING_CART_SERVICE_URL + "/shopping-cart/" + itemId + "?user=");
+        restTemplate.delete(SHOPPING_CART_SERVICE_URL + "/shopping-cart/" + itemId + "?user=" + userId);
     }
 
     public List<ItemDetailDTO> fetchShoppingCartItems(String userId) throws ShoppingCartContentNotFoundException{
@@ -77,7 +77,7 @@ public class ShoppingCartService {
     }
 
     public void addShoppingCartItem(int itemId, String userId) {
-        ResponseEntity<String> response = restTemplate.getForEntity(SHOPPING_CART_SERVICE_URL + "/items" + "/shopping-cart?user=" + userId, String.class);
+        ResponseEntity<Integer> response = restTemplate.postForEntity(SHOPPING_CART_SERVICE_URL  + "/shopping-cart/" + itemId + "?user=" + userId , null , Integer.class);
 
         if(response.getStatusCode().is2xxSuccessful()) {
             logger.info("Item with id: {} successfully added to shopping cart", itemId);
