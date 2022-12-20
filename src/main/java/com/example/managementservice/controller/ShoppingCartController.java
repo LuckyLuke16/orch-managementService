@@ -2,28 +2,34 @@ package com.example.managementservice.controller;
 
 import com.example.managementservice.controller.controllerInterfaces.ShoppingCartOperations;
 import com.example.managementservice.model.ItemDetailDTO;
+import com.example.managementservice.model.UserId;
 import com.example.managementservice.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class ShoppingCartController implements ShoppingCartOperations {
 
-    ShoppingCartService shoppingCartService;
+    private ShoppingCartService shoppingCartService;
+
+    private final UserId userId;
 
     @Autowired
-    public ShoppingCartController(ShoppingCartService shoppingCartService) {
+    public ShoppingCartController(ShoppingCartService shoppingCartService, UserId userId) {
         this.shoppingCartService = shoppingCartService;
+        this.userId = userId;
     }
+
     public List<ItemDetailDTO> fetchShoppingCartContent() {
         List<ItemDetailDTO> allShoppingCartItems;
-
         try {
-            allShoppingCartItems = shoppingCartService.fetchShoppingCartItems();
+            String id = userId.getUserId();
+            allShoppingCartItems = shoppingCartService.fetchShoppingCartItems(id);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -33,7 +39,8 @@ public class ShoppingCartController implements ShoppingCartOperations {
 
     public void deleteItem(int itemId) {
         try {
-            shoppingCartService.deleteShoppingCartItem(itemId);
+            String id = userId.getUserId();
+            shoppingCartService.deleteShoppingCartItem(itemId, id);
         } catch(Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -41,7 +48,8 @@ public class ShoppingCartController implements ShoppingCartOperations {
 
     public void addItem(int itemId) {
         try {
-            shoppingCartService.addShoppingCartItem(itemId);
+            String id = userId.getUserId();
+            shoppingCartService.addShoppingCartItem(itemId, id);
         } catch(Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

@@ -44,14 +44,15 @@ public class ProductService {
 
     public ItemDetailDTO fetchSingleItem(int itemID) {
         ItemDetailDTO singleItemToFetch;
-
-        ResponseEntity<ItemDetailDTO> response = restTemplate.getForEntity(PRODUCT_SERVICE_URL + "/items" + "/" + itemID, ItemDetailDTO.class);
+        try {
+            ResponseEntity<ItemDetailDTO> response = restTemplate.getForEntity(PRODUCT_SERVICE_URL + "/items" + "/" + itemID, ItemDetailDTO.class);
         if(response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
             singleItemToFetch = (response.getBody());
-
             return singleItemToFetch;
         }
-        logger.warn("Wanted item not found {}", response.getStatusCode());
+        } catch (Exception e) {
+            logger.warn("Single Item with id: {} could not be fetched", itemID);
+        }
         throw new NoItemsFoundException();
     }
 }
