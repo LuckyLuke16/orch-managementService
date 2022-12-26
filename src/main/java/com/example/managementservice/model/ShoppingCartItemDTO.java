@@ -2,10 +2,15 @@ package com.example.managementservice.model;
 
 import lombok.Data;
 
-import java.util.HashMap;
-
 @Data
 public class ShoppingCartItemDTO {
 
-    private HashMap<Integer, Integer> itemsFromShoppingCart;
+    private int id;
+
+    private String name;
+
+    private float price;
+
+    private int quantityInCart;
+
 }

@@ -1,15 +1,14 @@
 package com.example.managementservice.service;
 
 import com.example.managementservice.exception.NoItemsFoundException;
-import com.example.managementservice.model.Genre;
-import com.example.managementservice.model.ItemDTO;
-import com.example.managementservice.model.ItemDetailDTO;
+import com.example.managementservice.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -54,5 +53,25 @@ public class ProductService {
             logger.warn("Single Item with id: {} could not be fetched", itemID);
         }
         throw new NoItemsFoundException();
+    }
+
+    public void orderItems(List<ShoppingCartItemDTO> itemsFromShoppingCart) {
+        ItemQuantityDTO itemsToOrder = new ItemQuantityDTO();
+        itemsToOrder.setItemsFromShoppingCart(toItemIdWithQuantityMap(itemsFromShoppingCart));
+        ResponseEntity<List> response = restTemplate.postForEntity(PRODUCT_SERVICE_URL + "/items" + "/stock", itemsToOrder, List.class);
+
+        if(response.getStatusCode().is2xxSuccessful()) {
+
+        }
+        logger.warn("No items could be fetch {}", response.getStatusCode());
+        throw new NoItemsFoundException();
+    }
+
+    private HashMap<Integer, Integer> toItemIdWithQuantityMap(List<ShoppingCartItemDTO> itemsFromShoppingCart) {
+        HashMap<Integer, Integer> mapWithIdsAndQuantity = new HashMap<>();
+        for(ShoppingCartItemDTO item : itemsFromShoppingCart) {
+            mapWithIdsAndQuantity.put(item.getId(), item.getQuantityInCart());
+        }
+        return mapWithIdsAndQuantity;
     }
 }

@@ -1,12 +1,11 @@
 package com.example.managementservice.controller;
 
 import com.example.managementservice.controller.controllerInterfaces.ShoppingCartOperations;
-import com.example.managementservice.model.ItemDetailDTO;
+import com.example.managementservice.model.ShoppingCartItemDTO;
 import com.example.managementservice.model.UserId;
 import com.example.managementservice.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,8 +24,8 @@ public class ShoppingCartController implements ShoppingCartOperations {
         this.userId = userId;
     }
 
-    public List<ItemDetailDTO> fetchShoppingCartContent() {
-        List<ItemDetailDTO> allShoppingCartItems;
+    public List<ShoppingCartItemDTO> fetchShoppingCartContent() {
+        List<ShoppingCartItemDTO> allShoppingCartItems;
         try {
             String id = userId.getUserId();
             allShoppingCartItems = shoppingCartService.fetchShoppingCartItems(id);
