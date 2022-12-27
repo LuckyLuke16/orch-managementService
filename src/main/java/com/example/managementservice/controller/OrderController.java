@@ -1,6 +1,7 @@
 package com.example.managementservice.controller;
 
 import com.example.managementservice.controller.controllerInterfaces.OrderOperations;
+import com.example.managementservice.model.OrderDTO;
 import com.example.managementservice.model.UserId;
 import com.example.managementservice.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,15 @@ public class OrderController implements OrderOperations {
         this.orderService = orderService;
     }
 
-    public void createOrder() {
+    public void createOrder(OrderDTO orderDetails) {
         try {
             String id = userId.getUserId();
-            this.orderService.makeOrder(id);
+            this.orderService.makeOrder(id, orderDetails);
 
         } catch (Exception e) {
 
         }
     }
+
+
 }

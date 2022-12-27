@@ -1,7 +1,5 @@
 package com.example.managementservice.controller.controllerInterfaces;
 
-import com.example.managementservice.model.ItemDTO;
-import com.example.managementservice.model.ItemDetailDTO;
 import com.example.managementservice.model.ShoppingCartItemDTO;
 import org.springframework.web.bind.annotation.*;
 

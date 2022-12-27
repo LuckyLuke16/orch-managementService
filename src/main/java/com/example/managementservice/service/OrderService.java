@@ -1,6 +1,9 @@
 package com.example.managementservice.service;
 
+import com.example.managementservice.exception.PaymentFailedException;
 import com.example.managementservice.exception.ShoppingCartContentNotFoundException;
+import com.example.managementservice.exception.StockUpdateException;
+import com.example.managementservice.model.OrderDTO;
 import com.example.managementservice.model.ShoppingCartItemDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +29,12 @@ public class OrderService {
         this.paymentService = paymentService;
     }
 
-    public void makeOrder(String userId) {
+    public void makeOrder(String userId, OrderDTO orderDetails) {
         List<ShoppingCartItemDTO> itemsFromShoppingCart = this.fetchItemsToPayFor(userId);
         logger.info("{} items to pay for", itemsFromShoppingCart.size());
         this.updateStockOfItems(itemsFromShoppingCart);
-        this.paymentService.makePayment();
+        long paymentId = this.fulfillPayment(orderDetails.getPaymentMethod(), userId, itemsFromShoppingCart);
+//        this.saveOrder(userId, );
     }
 
     private List<ShoppingCartItemDTO> fetchItemsToPayFor(String userId) {
@@ -46,8 +50,26 @@ public class OrderService {
         try {
             this.productService.orderItems(itemsFromShoppingCart);
         } catch (Exception e) {
-            logger.warn("Order stopped because i");
+            logger.warn("Order stopped because the stock of some items could not be updated");
             throw new ShoppingCartContentNotFoundException();
+        }
+    }
+    private long fulfillPayment(String paymentMethod, String userId, List<ShoppingCartItemDTO> itemsToPayFor) {
+        try {
+            return this.paymentService.makePayment(paymentMethod, userId, itemsToPayFor);
+        } catch (Exception e) {
+            logger.warn("Order stopped because the payment failed");
+            this.resetFailedItemInventory(itemsToPayFor);
+            throw new PaymentFailedException();
+        }
+    }
+
+    private void resetFailedItemInventory(List<ShoppingCartItemDTO> failedItems){
+        try{
+            this.productService.resetStock(failedItems);
+            logger.info("Items stock was successfully reset");
+        }catch(StockUpdateException e){
+            logger.warn("Item stock could not be reset",e);
         }
     }
 }
