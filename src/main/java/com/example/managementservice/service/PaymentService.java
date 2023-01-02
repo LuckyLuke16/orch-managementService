@@ -28,8 +28,9 @@ public class PaymentService {
         ResponseEntity<Long> response = restTemplate.postForEntity(PRODUCT_SERVICE_URL + "/payments"
                 + "?userId=" + userId + "&paymentMethod=" + paymentMethod, itemsToPayFor, Long.class);
 
-        if (response.getStatusCode().is2xxSuccessful() && response.hasBody()) {
+        if (response.getStatusCode().is2xxSuccessful() && response.hasBody() && response.getBody() != null) {
             logger.info("Payment with payment id: {} was successful", response.getBody());
+
             return response.getBody();
         }
         throw new PaymentFailedException();
