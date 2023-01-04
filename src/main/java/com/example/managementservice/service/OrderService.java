@@ -55,11 +55,11 @@ public class OrderService {
                     + "?userId=" + userId + "&paymentId=" + paymentId, address, Long.class);
 
             if (response.getStatusCode().is2xxSuccessful() && response.hasBody() && response.getBody() != null) {
-                logger.info("Payment with payment id: {} was successful", response.getBody());
+                logger.info("Order with order id: {} was successful", response.getBody());
 
             }
         }catch(StockUpdateException e){
-            logger.warn("Item stock could not be reset",e);
+            logger.warn("Order could not be saved",e);
         }
     }
 
