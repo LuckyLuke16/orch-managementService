@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface OrderOperations {
 
     @PostMapping
-    void createOrder(@RequestBody OrderDTO orderDTO);
+    void createOrder(@RequestBody OrderDTO orderDetails);
 }

@@ -1,10 +1,9 @@
 package com.example.managementservice.controller;
 
 import com.example.managementservice.controller.controllerInterfaces.ProductOperations;
-import com.example.managementservice.model.Genre;
-import com.example.managementservice.model.ItemDTO;
-import com.example.managementservice.model.ItemDetailDTO;
+import com.example.managementservice.model.*;
 import com.example.managementservice.service.ProductService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,7 @@ public class ProductController implements ProductOperations {
         List<ItemDTO> allItemsList;
         try {
             Genre genreEnum = Genre.valueOf(genre);
-            allItemsList = productService.fetchAllProducts(genreEnum);
+           allItemsList = productService.fetchAllProducts(genreEnum);
         } catch (Exception e) {
             logger.warn("Items could not be fetched", e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

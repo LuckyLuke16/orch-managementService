@@ -5,6 +5,8 @@ import com.example.managementservice.exception.ShoppinCartItemDeletionFailedExce
 import com.example.managementservice.exception.ShoppingCartContentNotFoundException;
 import com.example.managementservice.model.ItemDetailDTO;
 import com.example.managementservice.model.ShoppingCartItemDTO;
+import com.example.managementservice.model.ItemQuantityDTO;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -21,32 +24,54 @@ public class ShoppingCartService {
     private final RestTemplate restTemplate;
     private final ProductService productService;
 
+    private final ModelMapper modelMapper;
+
     Logger logger = LoggerFactory.getLogger(ShoppingCartService.class);
 
     private final String SHOPPING_CART_SERVICE_URL = "http://localhost:8082";
 
-    public ShoppingCartService(RestTemplate restTemplate, ProductService productService) {
+    public ShoppingCartService(RestTemplate restTemplate, ProductService productService, ModelMapper modelMapper) {
         this.restTemplate = restTemplate;
         this.productService = productService;
+        this.modelMapper = modelMapper;
     }
 
     public void deleteShoppingCartItem(int itemId, String userId) {
         restTemplate.delete(SHOPPING_CART_SERVICE_URL + "/shopping-cart/" + itemId + "?user=" + userId);
     }
 
-    public List<ItemDetailDTO> fetchShoppingCartItems(String userId) throws ShoppingCartContentNotFoundException{
+    public List<ShoppingCartItemDTO> fetchShoppingCartItems(String userId) throws ShoppingCartContentNotFoundException{
         List<ItemDetailDTO> listOfItems = new ArrayList<>();
         Set<Integer> idsOfShoppingCartItems;
+        HashMap<Integer, Integer> cartItemsWithQuantity = new HashMap<>();
 
-        ResponseEntity<ShoppingCartItemDTO> response = restTemplate.getForEntity(SHOPPING_CART_SERVICE_URL + "/shopping-cart?user=" + userId, ShoppingCartItemDTO.class);
+        ResponseEntity<ItemQuantityDTO> response = restTemplate.getForEntity(SHOPPING_CART_SERVICE_URL + "/shopping-cart?user=" + userId, ItemQuantityDTO.class);
         if(response.getStatusCode().is2xxSuccessful() && wereItemsFound(response)) {
-            idsOfShoppingCartItems = response.getBody().getItemsFromShoppingCart().keySet();
+            cartItemsWithQuantity = response.getBody().getItemsFromShoppingCart();
+            idsOfShoppingCartItems = cartItemsWithQuantity.keySet();
             listOfItems = fetchShoppingCartItemDetails(idsOfShoppingCartItems, userId);
         }
 
+        return convertToCartItemDTO(listOfItems, cartItemsWithQuantity);
+    }
+
+    private List<ShoppingCartItemDTO> convertToCartItemDTO(List<ItemDetailDTO> listOfItems, HashMap<Integer, Integer> cartItemsWithQuantity) throws ShoppingCartContentNotFoundException{
+        List<ShoppingCartItemDTO> shoppingCartItemList = new ArrayList<>();
+
         if(listOfItems.isEmpty())
             throw new ShoppingCartContentNotFoundException();
-        return listOfItems;
+
+        try {
+            for (ItemDetailDTO item : listOfItems) {
+                ShoppingCartItemDTO shoppingCartItemDTO = modelMapper.map(item, ShoppingCartItemDTO.class);
+                shoppingCartItemDTO.setQuantityInCart(cartItemsWithQuantity.get(item.getId()));
+                shoppingCartItemList.add(shoppingCartItemDTO);
+            }
+        } catch (Exception e) {
+            logger.warn("Items could not be properly mapped to a ShoppingCartDTO");
+        }
+
+        return shoppingCartItemList;
     }
 
     private List<ItemDetailDTO> fetchShoppingCartItemDetails(Set<Integer> idsOfShoppingCartItems, String userId) {
@@ -72,7 +97,7 @@ public class ShoppingCartService {
         }
     }
 
-    private boolean wereItemsFound(ResponseEntity<ShoppingCartItemDTO> response) {
+    private boolean wereItemsFound(ResponseEntity<ItemQuantityDTO> response) {
         return response.getBody() != null && response.getBody().getItemsFromShoppingCart() != null && !response.getBody().getItemsFromShoppingCart().isEmpty();
     }
 
