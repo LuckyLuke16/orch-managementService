@@ -47,6 +47,7 @@ public class OrderService {
         this.updateStockOfItems(itemsFromShoppingCart);
         long paymentId = this.fulfillPayment(orderDetails.getPaymentMethod(), userId, itemsFromShoppingCart);
         this.saveOrder(userId, paymentId, orderDetails.getAddress());
+        this.deleteCartOfUser(userId);
     }
 
     private void saveOrder(String userId, long paymentId, Address address) {
@@ -96,6 +97,15 @@ public class OrderService {
             logger.info("Items stock was successfully reset");
         }catch(StockUpdateException e){
             logger.warn("Item stock could not be reset",e);
+        }
+    }
+
+    private void deleteCartOfUser(String userId) {
+        try {
+            this.shoppingCartService.deleteAllCartItems(userId);
+            logger.info("Cart items of user: {} deleted", userId);
+        } catch (Exception e) {
+            logger.warn("Cart items of user: {} could not be deleted", userId);
         }
     }
 }

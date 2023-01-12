@@ -111,4 +111,8 @@ public class ShoppingCartService {
             throw new ShoppinCartItemDeletionFailedException(itemId);
         }
     }
+
+    public void deleteAllCartItems(String userId) {
+        restTemplate.delete(SHOPPING_CART_SERVICE_URL + "/shopping-cart/cart" + "?user=" + userId);
+    }
 }
