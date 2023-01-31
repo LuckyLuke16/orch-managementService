@@ -1,6 +1,6 @@
-package com.example.managementservice.controller;
+package com.example.managementservice.controller.controllerInterfaces;
 
-import com.example.managementservice.model.ItemDTO;
+import com.example.managementservice.model.ShoppingCartItemDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 public interface ShoppingCartOperations {
 
     @GetMapping
-    List<ItemDTO> fetchShoppingCartContent();
+    List<ShoppingCartItemDTO> fetchShoppingCartContent();
 
     @DeleteMapping("/{itemId}")
     void deleteItem(@PathVariable int itemId);

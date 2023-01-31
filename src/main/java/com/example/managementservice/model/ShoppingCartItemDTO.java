@@ -3,19 +3,14 @@ package com.example.managementservice.model;
 import lombok.Data;
 
 @Data
-public class ItemDetailDTO {
+public class ShoppingCartItemDTO {
 
     private int id;
 
     private String name;
 
-    private String description;
-
-    private String genre;
-
-    private String author;
-
     private float price;
 
-    private int quantity;
+    private int quantityInCart;
+
 }
