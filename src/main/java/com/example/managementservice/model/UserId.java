@@ -22,9 +22,11 @@ public class UserId {
 
     private String getUserIdFromToken() throws IdNotFoundException {
         try {
-            KeycloakAuthenticationToken authentication = (KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            KeycloakAuthenticationToken authentication = (KeycloakAuthenticationToken) SecurityContextHolder
+                .getContext().getAuthentication();
             Principal principal = (Principal) authentication.getPrincipal();
-            KeycloakSecurityContext keycloakSecurityContext = ((KeycloakPrincipal<?>) principal).getKeycloakSecurityContext();
+            KeycloakSecurityContext keycloakSecurityContext = ((KeycloakPrincipal<?>) principal)
+                .getKeycloakSecurityContext();
             IDToken userToken = keycloakSecurityContext.getToken();
             return userToken.getSubject();
         } catch(Exception e) {
