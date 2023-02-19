@@ -45,7 +45,8 @@ public class ProductService {
     public ItemDetailDTO fetchSingleItem(int itemID) {
         ItemDetailDTO singleItemToFetch;
         try {
-            ResponseEntity<ItemDetailDTO> response = restTemplate.getForEntity(PRODUCT_SERVICE_URL + "/items" + "/" + itemID, ItemDetailDTO.class);
+            ResponseEntity<ItemDetailDTO> response = restTemplate
+                .getForEntity(PRODUCT_SERVICE_URL + "/items" + "/" + itemID, ItemDetailDTO.class);
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 singleItemToFetch = (response.getBody());
                 return singleItemToFetch;
